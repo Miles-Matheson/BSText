@@ -809,23 +809,51 @@ public class TextLayout: NSObject, NSCoding, NSCopying {
             }
         }
         
-        if rowCount_ > 0 {
-            if maximumNumberOfRows > 0 {
-                if rowCount_ > maximumNumberOfRows {
-                    needTruncation = true
-                    rowCount_ = maximumNumberOfRows
-                    repeat {
-                        let line = lines_.last
-                        if line == nil {
-                            break
-                        }
-                        if line!.row < rowCount_ {
-                            break
-                        }
-                        lines_.removeLast()
-                    } while true
-                }
-            }
+        // if rowCount_ > 0 {
+        //     if maximumNumberOfRows > 0 {
+        //         if rowCount_ > maximumNumberOfRows {
+        //             needTruncation = true
+        //             rowCount_ = maximumNumberOfRows
+        //             repeat {
+        //                 let line = lines_.last
+        //                 if line == nil {
+        //                     break
+        //                 }
+        //                 if line!.row < rowCount_ {
+        //                     break
+        //                 }
+        //                 lines_.removeLast()
+        //             } while true
+        //         }
+        //     }
+
+        if container?.truncationToken != nil {
+              if rowCount_ >= maximumNumberOfRows {
+                  needTruncation = true
+                  rowCount_ = maximumNumberOfRows
+                  if maximumNumberOfRows == 0 {
+                      maximumNumberOfRows = rowCount_
+                  } else {
+                      rowCount_ = maximumNumberOfRows
+                  }
+
+                  repeat {
+                      let line = lines_.last
+                      if line == nil {
+                          break
+                      }
+                      if line!.row < rowCount_ {
+                          break
+                      }
+                      lines_.removeLast()
+                  } while true
+              }
+          }
+
+
+
+
+            
             let lastLine = lines_.last
             if !needTruncation && (lastLine?.range.location)! + (lastLine?.range.length)! < text!.length {
                 needTruncation = true
